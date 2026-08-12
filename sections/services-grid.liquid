@@ -1,0 +1,665 @@
+<section
+  id="AC-Services-{{ section.id }}"
+  class="ac-services ac-services--{{ section.settings.text_alignment }} full-width"
+  style="
+    --ac-services-columns: {{ section.settings.columns_desktop }};
+    --ac-services-bg: {{ section.settings.background_color }};
+    --ac-services-text: {{ section.settings.text_color }};
+    --ac-services-muted: {{ section.settings.muted_text_color }};
+    --ac-services-card: {{ section.settings.card_color }};
+    --ac-services-border: {{ section.settings.border_color }};
+    --ac-services-accent: {{ section.settings.accent_color }};
+    --ac-services-burgundy: {{ section.settings.burgundy_color }};
+    --ac-services-padding-top: {{ section.settings.padding_top }}px;
+    --ac-services-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+  aria-labelledby="AC-Services-Heading-{{ section.id }}"
+>
+  <div class="ac-services__inner page-width">
+    <header class="ac-services__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ac-services__eyebrow">
+          <span aria-hidden="true"></span>
+          {{ section.settings.eyebrow | escape }}
+          <span aria-hidden="true"></span>
+        </p>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 id="AC-Services-Heading-{{ section.id }}" class="ac-services__heading">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.intro != blank -%}
+        <div class="ac-services__intro rte">{{ section.settings.intro }}</div>
+      {%- endif -%}
+    </header>
+
+    <div class="ac-services__grid">
+      {%- for block in section.blocks -%}
+        <article
+          class="ac-service-card{% if block.settings.highlight_card %} ac-service-card--highlight{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="ac-service-card__top">
+            <span class="ac-service-card__icon" aria-hidden="true">
+              {%- case block.settings.icon -%}
+                {%- when 'website' -%}
+                  <svg viewBox="0 0 32 32"><rect x="3.5" y="5" width="25" height="21" rx="3"/><path d="M3.5 11h25M8 8h.1M12 8h.1M16 8h.1M9 17l4 3-4 3M16 23h7"/></svg>
+                {%- when 'application' -%}
+                  <svg viewBox="0 0 32 32"><rect x="6" y="3.5" width="20" height="25" rx="4"/><path d="M11 8h10M11 13h4v4h-4zM18 13h3v4h-3zM11 20h4v3h-4zM18 20h3v3h-3z"/></svg>
+                {%- when 'commerce' -%}
+                  <svg viewBox="0 0 32 32"><path d="M4 6h3l3 14h14l3-10H9"/><circle cx="12" cy="25.5" r="1.5"/><circle cx="23" cy="25.5" r="1.5"/><path d="M15 10v7M20 10v7"/></svg>
+                {%- when 'automation' -%}
+                  <svg viewBox="0 0 32 32"><path d="M16 3.5 18 8l4.8-1.1.7 4.9 4.5 2-2.8 4 2.8 4-4.5 2-.7 4.8-4.8-1.1-2 4.5-2-4.5-4.8 1.1-.7-4.8-4.5-2 2.8-4-2.8-4 4.5-2 .7-4.9L14 8l2-4.5Z"/><circle cx="16" cy="17.8" r="4.5"/></svg>
+                {%- when 'seo' -%}
+                  <svg viewBox="0 0 32 32"><circle cx="14" cy="14" r="8.5"/><path d="m20.5 20.5 7 7M9.5 17l3-3 2.5 2 4-5"/></svg>
+                {%- when 'branding' -%}
+                  <svg viewBox="0 0 32 32"><path d="M5 24 22.5 6.5a3.5 3.5 0 0 1 5 5L10 29H5v-5Z"/><path d="m20 9 5 5M5 29h22M8 20l4 4"/></svg>
+                {%- when 'strategy' -%}
+                  <svg viewBox="0 0 32 32"><path d="M5 26V14M12 26V8M19 26V18M26 26V4M3 27.5h26"/><path d="m5 9 7-4 7 7 7-8"/></svg>
+                {%- else -%}
+                  <svg viewBox="0 0 32 32"><path d="M16 3 27 8v8c0 7-4.7 11.3-11 14-6.3-2.7-11-7-11-14V8l11-5Z"/><path d="m10.5 16 3.5 3.5 7.5-8"/></svg>
+              {%- endcase -%}
+            </span>
+
+            {%- if section.settings.show_numbers -%}
+              <span class="ac-service-card__number" aria-hidden="true">
+                {{ forloop.index | prepend: '0' | slice: -2, 2 }}
+              </span>
+            {%- endif -%}
+          </div>
+
+          {%- if block.settings.title != blank -%}
+            <h3>{{ block.settings.title | escape }}</h3>
+          {%- endif -%}
+
+          {%- if block.settings.text != blank -%}
+            <div class="ac-service-card__text rte">{{ block.settings.text }}</div>
+          {%- endif -%}
+
+          {%- if block.settings.link_label != blank -%}
+            <a
+              class="ac-service-card__link"
+              {% if block.settings.link != blank %}
+                href="{{ block.settings.link }}"
+              {% else %}
+                role="link" aria-disabled="true"
+              {% endif %}
+            >
+              <span>{{ block.settings.link_label | escape }}</span>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5"/></svg>
+            </a>
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_cta and section.settings.cta_label != blank -%}
+      <div class="ac-services__cta">
+        <p>{{ section.settings.cta_supporting_text | escape }}</p>
+        <a
+          class="ac-services__button"
+          {% if section.settings.cta_link != blank %}
+            href="{{ section.settings.cta_link }}"
+          {% else %}
+            role="link" aria-disabled="true"
+          {% endif %}
+        >
+          {{ section.settings.cta_label | escape }}
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5"/></svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .ac-services {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--ac-services-padding-top) var(--ac-services-padding-bottom);
+    background:
+      radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--ac-services-accent) 12%, transparent), transparent 28rem),
+      var(--ac-services-bg);
+    color: var(--ac-services-text);
+  }
+
+  .ac-services::before {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(76rem, 80vw);
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, var(--ac-services-accent), transparent);
+    content: '';
+    opacity: 0.55;
+  }
+
+  .ac-services__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ac-services__header {
+    max-width: 50rem;
+    margin: 0 auto clamp(2.5rem, 5vw, 4.5rem);
+    text-align: center;
+  }
+
+  .ac-services--left .ac-services__header {
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .ac-services__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.1rem;
+    color: var(--ac-services-burgundy);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+  }
+
+  .ac-services__eyebrow span {
+    width: 1.6rem;
+    height: 1px;
+    background: var(--ac-services-accent);
+  }
+
+  .ac-services--left .ac-services__eyebrow span:last-child {
+    display: none;
+  }
+
+  .ac-services__heading {
+    color: var(--ac-services-burgundy);
+    font-size: clamp(2.25rem, 5vw, 4.25rem);
+    letter-spacing: -0.04em;
+  }
+
+  .ac-services__intro {
+    max-width: 45rem;
+    margin: 1.3rem auto 0;
+    color: var(--ac-services-muted);
+    font-size: clamp(1rem, 1.3vw, 1.12rem);
+  }
+
+  .ac-services--left .ac-services__intro {
+    margin-left: 0;
+  }
+
+  .ac-services__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--ac-services-columns), minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.6rem);
+  }
+
+  .ac-service-card {
+    position: relative;
+    display: flex;
+    min-height: 22rem;
+    overflow: hidden;
+    flex-direction: column;
+    padding: clamp(1.5rem, 2.5vw, 2.2rem);
+    border: 1px solid var(--ac-services-border);
+    border-radius: var(--style-border-radius-cards);
+    background: var(--ac-services-card);
+    box-shadow: 0 16px 42px rgba(24, 13, 15, 0.06);
+    transition:
+      transform 260ms ease,
+      border-color 260ms ease,
+      box-shadow 260ms ease;
+  }
+
+  .ac-service-card::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: linear-gradient(90deg, var(--ac-services-burgundy), var(--ac-services-accent));
+    content: '';
+    transition: transform 260ms ease;
+  }
+
+  .ac-service-card:hover {
+    transform: translateY(-8px);
+    border-color: color-mix(in srgb, var(--ac-services-accent) 72%, transparent);
+    box-shadow: 0 24px 60px rgba(75, 15, 27, 0.13);
+  }
+
+  .ac-service-card:hover::after {
+    transform: scaleX(1);
+  }
+
+  .ac-service-card--highlight {
+    border-color: color-mix(in srgb, var(--ac-services-accent) 65%, transparent);
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.06), transparent 42%),
+      var(--ac-services-burgundy);
+    color: #fff8ee;
+  }
+
+  .ac-service-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: auto;
+  }
+
+  .ac-service-card__icon {
+    display: grid;
+    width: 3.65rem;
+    height: 3.65rem;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--ac-services-accent) 48%, transparent);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--ac-services-accent) 10%, transparent);
+    color: var(--ac-services-burgundy);
+  }
+
+  .ac-service-card--highlight .ac-service-card__icon {
+    color: var(--ac-services-accent);
+  }
+
+  .ac-service-card__icon svg {
+    width: 1.8rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ac-service-card__number {
+    color: color-mix(in srgb, var(--ac-services-muted) 45%, transparent);
+    font-family: var(--font-heading-family);
+    font-size: 1.55rem;
+    font-weight: 700;
+  }
+
+  .ac-service-card--highlight .ac-service-card__number {
+    color: rgba(255, 248, 238, 0.3);
+  }
+
+  .ac-service-card h3 {
+    margin-top: 2.2rem;
+    color: var(--ac-services-burgundy);
+    font-size: clamp(1.4rem, 2vw, 1.85rem);
+    letter-spacing: -0.025em;
+  }
+
+  .ac-service-card--highlight h3 {
+    color: #fff8ee;
+  }
+
+  .ac-service-card__text {
+    margin-top: 0.85rem;
+    color: var(--ac-services-muted);
+    font-size: 0.95rem;
+  }
+
+  .ac-service-card--highlight .ac-service-card__text {
+    color: rgba(255, 248, 238, 0.72);
+  }
+
+  .ac-service-card__link {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 1.5rem;
+    color: var(--ac-services-burgundy);
+    font-size: 0.86rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .ac-service-card--highlight .ac-service-card__link {
+    color: var(--ac-services-accent);
+  }
+
+  .ac-service-card__link svg,
+  .ac-services__button svg {
+    width: 1.15rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 180ms ease;
+  }
+
+  .ac-service-card__link:hover svg,
+  .ac-services__button:hover svg {
+    transform: translateX(4px);
+  }
+
+  .ac-services__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    text-align: center;
+  }
+
+  .ac-services__cta p {
+    color: var(--ac-services-muted);
+    font-weight: 650;
+  }
+
+  .ac-services__button {
+    display: inline-flex;
+    min-height: 3.25rem;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: var(--style-border-radius-buttons);
+    background: var(--ac-services-burgundy);
+    color: #fff8ee;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .ac-services__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(75, 15, 27, 0.2);
+  }
+
+  @media (max-width: 1100px) {
+    .ac-services__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 680px) {
+    .ac-services__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ac-service-card {
+      min-height: 20rem;
+    }
+
+    .ac-services__cta {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .ac-services__button {
+      justify-content: center;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Premium services",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small heading",
+      "default": "HOW WE CAN HELP"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Smarter systems for a stronger business."
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "<p>From your first idea to launch and long-term growth, Arthur's Creatives delivers digital solutions designed around your business.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Heading alignment",
+      "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "2", "label": "Two" },
+        { "value": "3", "label": "Three" },
+        { "value": "4", "label": "Four" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_numbers",
+      "label": "Show card numbers",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show bottom button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_supporting_text",
+      "label": "Button supporting text",
+      "default": "Have something different in mind?"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button text",
+      "default": "Tell Us About Your Project"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#F7F1E8"
+    },
+    {
+      "type": "color",
+      "id": "card_color",
+      "label": "Cards",
+      "default": "#FFFDFC"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#180D0F"
+    },
+    {
+      "type": "color",
+      "id": "muted_text_color",
+      "label": "Secondary text",
+      "default": "#705F62"
+    },
+    {
+      "type": "color",
+      "id": "burgundy_color",
+      "label": "Burgundy",
+      "default": "#4B0F1B"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Antique gold",
+      "default": "#C9A24D"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Borders",
+      "default": "#DFD1C4"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 40,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 104
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 40,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "default": 104
+    }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "website", "label": "Website" },
+            { "value": "application", "label": "Application" },
+            { "value": "commerce", "label": "E-commerce" },
+            { "value": "automation", "label": "AI automation" },
+            { "value": "seo", "label": "SEO" },
+            { "value": "branding", "label": "Branding" },
+            { "value": "strategy", "label": "Strategy" },
+            { "value": "shield", "label": "Trust" }
+          ],
+          "default": "website"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Website Development"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description",
+          "default": "<p>Professional, responsive websites designed to attract customers and support your growth.</p>"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link text",
+          "default": "Learn More"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight_card",
+          "label": "Use burgundy card",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Premium services",
+      "blocks": [
+        {
+          "type": "service",
+          "settings": {
+            "icon": "website",
+            "title": "Website Development",
+            "text": "<p>Professional, responsive websites designed to attract customers and support your growth.</p>",
+            "link_label": "Explore Websites"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "application",
+            "title": "Application Development",
+            "text": "<p>Purpose-built web and mobile applications that turn your ideas into useful business tools.</p>",
+            "link_label": "Explore Applications",
+            "highlight_card": true
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "commerce",
+            "title": "E-commerce Development",
+            "text": "<p>Conversion-focused online stores that make shopping simple, trustworthy and memorable.</p>",
+            "link_label": "Explore E-commerce"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "automation",
+            "title": "AI Automation",
+            "text": "<p>Intelligent workflows and agents that reduce repetitive work and keep your business moving.</p>",
+            "link_label": "Explore Automation"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "seo",
+            "title": "SEO & Growth",
+            "text": "<p>Search optimization and practical growth systems that help the right customers find you.</p>",
+            "link_label": "Explore SEO"
+          }
+        },
+        {
+          "type": "service",
+          "settings": {
+            "icon": "branding",
+            "title": "Brand & Creative",
+            "text": "<p>Visual identity and creative direction that give your business a polished, consistent presence.</p>",
+            "link_label": "Explore Branding"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

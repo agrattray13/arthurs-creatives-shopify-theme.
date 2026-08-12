@@ -1,55 +1,366 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
+{%- liquid
+  assign footer_logo_alt = section.settings.logo.alt | default: shop.name
+  assign copyright_name = section.settings.copyright_text | default: shop.name
+-%}
+
+<footer class="ac-footer full-width">
+  <div class="ac-footer__accent" aria-hidden="true"></div>
+
+  <div class="ac-footer__grid page-width">
+    <div class="ac-footer__brand">
+      <a href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+        {%- if section.settings.logo != blank -%}
+          {{
+            section.settings.logo
+            | image_url: width: 600
+            | image_tag:
+              class: 'ac-footer__logo',
+              widths: '180, 240, 360, 480, 600',
+              sizes: '220px',
+              alt: footer_logo_alt,
+              loading: 'lazy'
+          }}
+        {%- else -%}
+          <span class="ac-footer__wordmark">
+            <strong>Arthur's</strong>
+            <small>Creatives</small>
+          </span>
+        {%- endif -%}
+      </a>
+
+      {%- if section.settings.description != blank -%}
+        <div class="ac-footer__description rte">{{ section.settings.description }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.menu != blank -%}
+      <div class="ac-footer__column">
+        <h2>{{ section.settings.menu_heading | escape }}</h2>
+        <ul>
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.secondary_menu != blank -%}
+      <div class="ac-footer__column">
+        <h2>{{ section.settings.secondary_menu_heading | escape }}</h2>
+        <ul>
+          {%- for link in section.settings.secondary_menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    <div class="ac-footer__column ac-footer__contact">
+      <h2>{{ section.settings.contact_heading | escape }}</h2>
+
+      {%- if section.settings.contact_email != blank -%}
+        <a href="mailto:{{ section.settings.contact_email | escape }}">
+          {{ section.settings.contact_email | escape }}
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.contact_phone != blank -%}
+        <a href="tel:{{ section.settings.contact_phone | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', '' }}">
+          {{ section.settings.contact_phone | escape }}
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.location != blank -%}
+        <p>{{ section.settings.location | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.contact_button_label != blank -%}
+        <a
+          class="ac-footer__button"
+          {% if section.settings.contact_button_link != blank %}
+            href="{{ section.settings.contact_button_link }}"
+          {% else %}
+            role="link" aria-disabled="true"
+          {% endif %}
+        >
+          {{ section.settings.contact_button_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
   </div>
 
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
+  <div class="ac-footer__bottom page-width">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ copyright_name | escape }}. All rights reserved.</p>
 
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
-    {% endif %}
+    {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+      <div class="ac-footer__payments" aria-label="Accepted payment methods">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag }}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
 </footer>
 
 {% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
+  .ac-footer {
+    position: relative;
+    overflow: hidden;
+    padding: 4.5rem 0 1.4rem;
+    background:
+      radial-gradient(circle at 12% 0%, rgba(201, 162, 77, 0.16), transparent 32rem),
+      var(--color-burgundy);
+    color: #f8eee6;
   }
-  footer a {
+
+  .ac-footer__accent {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  }
+
+  .ac-footer__grid {
+    display: grid;
+    grid-template-columns: minmax(16rem, 1.6fr) repeat(3, minmax(9rem, 1fr));
+    gap: clamp(2rem, 4vw, 4.5rem);
+  }
+
+  .ac-footer__brand > a {
+    display: inline-block;
+    color: inherit;
     text-decoration: none;
-    color: var(--color-foreground);
   }
-  footer .footer__links,
-  footer .footer__payment {
+
+  .ac-footer__logo {
+    width: min(220px, 100%);
+    max-height: 5rem;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .ac-footer__wordmark {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    line-height: 0.9;
+  }
+
+  .ac-footer__wordmark strong {
+    font-family: var(--font-heading-family);
+    font-size: 2.15rem;
+  }
+
+  .ac-footer__wordmark small {
+    margin-top: 0.55rem;
+    color: var(--color-gold);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+  }
+
+  .ac-footer__description {
+    max-width: 34rem;
+    margin-top: 1.35rem;
+    color: rgba(248, 238, 230, 0.74);
+    font-size: 0.95rem;
+  }
+
+  .ac-footer__column h2 {
+    margin-bottom: 1.15rem;
+    color: var(--color-gold);
+    font-family: var(--font-body-family);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .ac-footer__column ul {
+    display: grid;
+    gap: 0.65rem;
+    list-style: none;
+  }
+
+  .ac-footer__column a {
+    width: fit-content;
+    color: rgba(248, 238, 230, 0.82);
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  .ac-footer__column a:hover {
+    color: var(--color-gold);
+  }
+
+  .ac-footer__contact {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .ac-footer__contact h2 {
+    margin-bottom: 0.6rem;
+  }
+
+  .ac-footer__contact p {
+    color: rgba(248, 238, 230, 0.7);
+  }
+
+  .ac-footer__contact .ac-footer__button {
+    display: inline-flex;
+    min-height: 2.8rem;
+    align-items: center;
+    margin-top: 0.8rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--color-gold);
+    border-radius: var(--style-border-radius-buttons);
+    color: var(--color-gold);
+    font-weight: 800;
+  }
+
+  .ac-footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+    padding-top: 1.35rem;
+    border-top: 1px solid rgba(248, 238, 230, 0.14);
+    color: rgba(248, 238, 230, 0.62);
+    font-size: 0.78rem;
+  }
+
+  .ac-footer__payments {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.45rem;
+  }
+
+  .ac-footer__payments svg {
+    width: 2.3rem;
+  }
+
+  @media (max-width: 989px) {
+    .ac-footer__grid {
+      grid-template-columns: 1.5fr 1fr 1fr;
+    }
+
+    .ac-footer__contact {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .ac-footer {
+      padding-top: 3.5rem;
+    }
+
+    .ac-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .ac-footer__brand,
+    .ac-footer__contact {
+      grid-column: 1 / -1;
+    }
+
+    .ac-footer__bottom {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .ac-footer__payments {
+      justify-content: flex-start;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.footer",
+  "name": "Arthur's footer",
   "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Arthur's Creatives builds professional websites, applications, e-commerce experiences and AI automation for growing businesses.</p>"
+    },
+    {
+      "type": "text",
+      "id": "menu_heading",
+      "label": "First menu heading",
+      "default": "Explore"
+    },
     {
       "type": "link_list",
       "id": "menu",
-      "label": "t:labels.menu"
+      "label": "First menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "secondary_menu_heading",
+      "label": "Second menu heading",
+      "default": "Services"
+    },
+    {
+      "type": "link_list",
+      "id": "secondary_menu",
+      "label": "Second menu"
+    },
+    {
+      "type": "text",
+      "id": "contact_heading",
+      "label": "Contact heading",
+      "default": "Let's build something"
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Email"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone",
+      "label": "Phone"
+    },
+    {
+      "type": "text",
+      "id": "location",
+      "label": "Location",
+      "default": "Tampa, Florida"
+    },
+    {
+      "type": "text",
+      "id": "contact_button_label",
+      "label": "Contact button text",
+      "default": "Start Your Project"
+    },
+    {
+      "type": "url",
+      "id": "contact_button_link",
+      "label": "Contact button link"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright name",
+      "default": "Arthur's Creatives"
     },
     {
       "type": "checkbox",
       "id": "show_payment_icons",
-      "label": "t:labels.show_payment_icons",
+      "label": "Show payment icons",
       "default": true
     }
   ]

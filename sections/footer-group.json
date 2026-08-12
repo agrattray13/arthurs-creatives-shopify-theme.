@@ -1,25 +1,21 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "type": "footer",
-  "name": "t:general.footer",
+  "name": "Footer group",
   "sections": {
     "footer": {
       "type": "footer",
       "settings": {
-        "menu": "",
+        "description": "<p>Arthur's Creatives builds professional websites, applications, e-commerce experiences and AI automation for growing businesses.</p>",
+        "menu_heading": "Explore",
+        "menu": "footer",
+        "secondary_menu_heading": "Services",
+        "contact_heading": "Let's build something",
+        "location": "Tampa, Florida",
+        "contact_button_label": "Start Your Project",
+        "copyright_text": "Arthur's Creatives",
         "show_payment_icons": true
       }
     }
   },
-  "order": [
-    "footer"
-  ]
+  "order": ["footer"]
 }

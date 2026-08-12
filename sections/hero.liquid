@@ -1,0 +1,738 @@
+{%- liquid
+  assign hero_image = section.settings.hero_image
+  assign mobile_image = section.settings.mobile_image
+  assign image_alt = section.settings.image_alt | default: section.settings.heading
+-%}
+
+<section
+  id="AC-Hero-{{ section.id }}"
+  class="ac-hero ac-hero--{{ section.settings.content_alignment }} full-width"
+  style="
+    --ac-burgundy: {{ section.settings.burgundy_color }};
+    --ac-gold: {{ section.settings.gold_color }};
+    --ac-ivory: {{ section.settings.ivory_color }};
+    --ac-charcoal: {{ section.settings.charcoal_color }};
+    --ac-hero-min-height: {{ section.settings.hero_min_height }}px;
+  "
+>
+  <div class="ac-hero__backdrop" aria-hidden="true">
+    <span class="ac-hero__orb ac-hero__orb--one"></span>
+    <span class="ac-hero__orb ac-hero__orb--two"></span>
+    <span class="ac-hero__grid"></span>
+  </div>
+
+  <div class="ac-hero__container">
+    <div class="ac-hero__content" data-ac-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ac-hero__eyebrow">
+          <span class="ac-hero__eyebrow-line" aria-hidden="true"></span>
+          {{ section.settings.eyebrow | escape }}
+        </p>
+      {%- endif -%}
+
+      <h1 class="ac-hero__heading">{{ section.settings.heading | escape }}</h1>
+
+      {%- if section.settings.description != blank -%}
+        <div class="ac-hero__description rte">
+          {{ section.settings.description }}
+        </div>
+      {%- endif -%}
+
+      <div class="ac-hero__buttons">
+        {%- if section.settings.primary_label != blank -%}
+          <a
+            class="ac-button ac-button--primary"
+            {% if section.settings.primary_link != blank %}
+              href="{{ section.settings.primary_link }}"
+            {% else %}
+              role="link" aria-disabled="true"
+            {% endif %}
+          >
+            <span>{{ section.settings.primary_label | escape }}</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M4 10h11M11 5l5 5-5 5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"/>
+            </svg>
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.secondary_label != blank -%}
+          <a
+            class="ac-button ac-button--secondary"
+            {% if section.settings.secondary_link != blank %}
+              href="{{ section.settings.secondary_link }}"
+            {% else %}
+              role="link" aria-disabled="true"
+            {% endif %}
+          >
+            {{ section.settings.secondary_label | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="ac-hero__trust" aria-label="Why choose Arthur's Creatives">
+          {%- for block in section.blocks -%}
+            <div class="ac-trust-item" {{ block.shopify_attributes }}>
+              <span class="ac-trust-item__icon" aria-hidden="true">
+                {%- case block.settings.trust_icon -%}
+                  {%- when 'design' -%}
+                    <svg viewBox="0 0 24 24"><path d="M4 19.5V15l10.8-10.8a2.1 2.1 0 0 1 3 3L7 18H4Z"/><path d="m13.5 5.5 3 3M4 21h16"/></svg>
+                  {%- when 'mobile' -%}
+                    <svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M10 5h4M11 18.5h2"/></svg>
+                  {%- when 'growth' -%}
+                    <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M3 19.5h18"/><path d="m14 6 3-3 3 3M17 3v7"/></svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 24 24"><path d="M12 2.8 19 6v5.2c0 4.7-3 8.2-7 10-4-1.8-7-5.3-7-10V6l7-3.2Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>
+                {%- endcase -%}
+              </span>
+              <span>{{ block.settings.trust_text | escape }}</span>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="ac-hero__visual" data-ac-reveal>
+      <div class="ac-hero__visual-frame">
+        {%- if hero_image != blank -%}
+          <picture>
+            {%- if mobile_image != blank -%}
+              <source
+                media="(max-width: 749px)"
+                srcset="{{ mobile_image | image_url: width: 900 }}"
+              >
+            {%- endif -%}
+            <img
+              class="ac-hero__image"
+              src="{{ hero_image | image_url: width: 1600 }}"
+              srcset="
+                {{ hero_image | image_url: width: 700 }} 700w,
+                {{ hero_image | image_url: width: 1000 }} 1000w,
+                {{ hero_image | image_url: width: 1300 }} 1300w,
+                {{ hero_image | image_url: width: 1600 }} 1600w
+              "
+              sizes="(min-width: 990px) 48vw, 92vw"
+              width="1600"
+              height="1250"
+              alt="{{ image_alt | escape }}"
+              loading="eager"
+              fetchpriority="high"
+            >
+          </picture>
+        {%- else -%}
+          <div class="ac-browser" aria-label="Website and business dashboard preview">
+            <div class="ac-browser__top">
+              <div class="ac-browser__dots" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="ac-browser__address">arthurscreatives.tech</div>
+            </div>
+            <div class="ac-browser__screen">
+              <aside class="ac-browser__sidebar" aria-hidden="true">
+                <span class="ac-browser__mini-logo">AC</span>
+                <i class="is-active"></i><i></i><i></i><i></i><i></i>
+              </aside>
+              <div class="ac-browser__dashboard">
+                <div class="ac-browser__welcome">
+                  <span>Business Command Center</span>
+                  <strong>Growth at a glance</strong>
+                </div>
+                <div class="ac-browser__metrics">
+                  <div><span>New leads</span><strong>+28%</strong></div>
+                  <div><span>Conversions</span><strong>+17%</strong></div>
+                  <div><span>Time saved</span><strong>42h</strong></div>
+                </div>
+                <div class="ac-browser__lower">
+                  <div class="ac-browser__chart">
+                    <div class="ac-browser__chart-title"><span>Business growth</span><b>Last 30 days</b></div>
+                    <svg viewBox="0 0 420 155" role="img" aria-label="Upward growth chart">
+                      <defs>
+                        <linearGradient id="ac-chart-fill-{{ section.id }}" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0" stop-color="currentColor" stop-opacity=".35"/>
+                          <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+                        </linearGradient>
+                      </defs>
+                      <path class="ac-browser__chart-fill" d="M3 130C52 122 73 102 112 108s52 7 82-17 62-43 95-31 59-4 128-47v140H3Z"/>
+                      <path class="ac-browser__chart-line" d="M3 130C52 122 73 102 112 108s52 7 82-17 62-43 95-31 59-4 128-47"/>
+                    </svg>
+                  </div>
+                  <div class="ac-browser__tasks">
+                    <span>Automations</span>
+                    <p><i></i> Lead follow-up <b>Live</b></p>
+                    <p><i></i> Client onboarding <b>Live</b></p>
+                    <p><i></i> Review request <b>Live</b></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_floating_card -%}
+          <div class="ac-floating-card ac-floating-card--top">
+            <span class="ac-floating-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg>
+            </span>
+            <span><small>AI AUTOMATION</small><strong>Working for you</strong></span>
+          </div>
+
+          <div class="ac-floating-card ac-floating-card--bottom">
+            <span class="ac-floating-card__pulse" aria-hidden="true"></span>
+            <span><small>YOUR BUSINESS</small><strong>Ready to grow</strong></span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_badge -%}
+        <div class="ac-hero__badge">
+          <span class="ac-hero__badge-mark">AC</span>
+          <span>
+            <strong>{{ section.settings.badge_title | escape }}</strong>
+            <small>{{ section.settings.badge_text | escape }}</small>
+          </span>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="ac-hero__bottom-line" aria-hidden="true"></div>
+</section>
+
+<style>
+  #AC-Hero-{{ section.id }} {
+    position: relative;
+    isolation: isolate;
+    min-height: var(--ac-hero-min-height);
+    overflow: hidden;
+    color: var(--ac-ivory);
+    background:
+      radial-gradient(circle at 16% 18%, rgba(201, 162, 77, .13), transparent 28%),
+      linear-gradient(135deg, #240910 0%, var(--ac-burgundy) 55%, #2c0a14 100%);
+    font-family: var(--font-body-family, Inter, Arial, sans-serif);
+  }
+
+  #AC-Hero-{{ section.id }} *,
+  #AC-Hero-{{ section.id }} *::before,
+  #AC-Hero-{{ section.id }} *::after { box-sizing: border-box; }
+
+  #AC-Hero-{{ section.id }} a { color: inherit; text-decoration: none; }
+  #AC-Hero-{{ section.id }} h1,
+  #AC-Hero-{{ section.id }} p { margin: 0; }
+
+  #AC-Hero-{{ section.id }} .ac-hero__backdrop,
+  #AC-Hero-{{ section.id }} .ac-hero__grid { position: absolute; inset: 0; pointer-events: none; }
+
+  #AC-Hero-{{ section.id }} .ac-hero__grid {
+    z-index: -2;
+    opacity: .1;
+    background-image:
+      linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px);
+    background-size: 54px 54px;
+    mask-image: linear-gradient(90deg, #000, transparent 72%);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__orb {
+    position: absolute;
+    z-index: -1;
+    display: block;
+    border-radius: 50%;
+    filter: blur(3px);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__orb--one {
+    top: -220px;
+    right: -110px;
+    width: 650px;
+    height: 650px;
+    border: 1px solid rgba(201,162,77,.22);
+    box-shadow: inset 0 0 110px rgba(201,162,77,.06);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__orb--two {
+    right: 21%;
+    bottom: -310px;
+    width: 520px;
+    height: 520px;
+    background: rgba(201,162,77,.055);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__container {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, .94fr) minmax(420px, 1.06fr);
+    gap: clamp(36px, 6vw, 92px);
+    align-items: center;
+    width: min(1440px, calc(100% - 64px));
+    min-height: var(--ac-hero-min-height);
+    margin-inline: auto;
+    padding-block: clamp(72px, 9vw, 132px);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__content { max-width: 760px; }
+
+  #AC-Hero-{{ section.id }} .ac-hero__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: var(--ac-gold);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .21em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__eyebrow-line { width: 42px; height: 1px; background: var(--ac-gold); }
+
+  #AC-Hero-{{ section.id }} .ac-hero__heading {
+    max-width: 750px;
+    margin-top: 22px;
+    color: var(--ac-ivory);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(50px, 6vw, 92px);
+    font-weight: 400;
+    letter-spacing: -.047em;
+    line-height: .98;
+    text-wrap: balance;
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__description {
+    max-width: 665px;
+    margin-top: 27px;
+    color: rgba(247,241,232,.77);
+    font-size: clamp(16px, 1.25vw, 19px);
+    line-height: 1.72;
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__description p { margin: 0; }
+  #AC-Hero-{{ section.id }} .ac-hero__buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+
+  #AC-Hero-{{ section.id }} .ac-button {
+    display: inline-flex;
+    min-height: 54px;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 25px;
+    border: 1px solid var(--ac-gold);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    transition: transform .25s ease, color .25s ease, background-color .25s ease, box-shadow .25s ease;
+  }
+
+  #AC-Hero-{{ section.id }} .ac-button svg { width: 19px; height: 19px; transition: transform .25s ease; }
+  #AC-Hero-{{ section.id }} .ac-button:hover { transform: translateY(-3px); }
+  #AC-Hero-{{ section.id }} .ac-button:hover svg { transform: translateX(4px); }
+  #AC-Hero-{{ section.id }} .ac-button:focus-visible { outline: 3px solid var(--ac-ivory); outline-offset: 3px; }
+  #AC-Hero-{{ section.id }} .ac-button--primary { background: var(--ac-gold); color: var(--ac-charcoal); box-shadow: 0 12px 30px rgba(0,0,0,.19); }
+  #AC-Hero-{{ section.id }} .ac-button--primary:hover { box-shadow: 0 18px 38px rgba(0,0,0,.28); }
+  #AC-Hero-{{ section.id }} .ac-button--secondary { background: rgba(255,255,255,.025); color: var(--ac-ivory); }
+  #AC-Hero-{{ section.id }} .ac-button--secondary:hover { background: var(--ac-gold); color: var(--ac-charcoal); }
+
+  #AC-Hero-{{ section.id }} .ac-hero__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 22px;
+    margin-top: 43px;
+    padding-top: 26px;
+    border-top: 1px solid rgba(201,162,77,.22);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-trust-item { display: inline-flex; align-items: center; gap: 9px; color: rgba(247,241,232,.69); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  #AC-Hero-{{ section.id }} .ac-trust-item__icon { display: grid; place-items: center; width: 24px; height: 24px; color: var(--ac-gold); }
+  #AC-Hero-{{ section.id }} .ac-trust-item svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
+
+  #AC-Hero-{{ section.id }} .ac-hero__visual { position: relative; width: 100%; max-width: 760px; justify-self: end; }
+  #AC-Hero-{{ section.id }} .ac-hero__visual-frame { position: relative; padding: 32px 20px 30px 32px; }
+  #AC-Hero-{{ section.id }} .ac-hero__visual-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0 24px 17px 0;
+    border: 1px solid rgba(201,162,77,.48);
+    background: linear-gradient(145deg, rgba(255,255,255,.085), rgba(255,255,255,.018));
+    box-shadow: 0 36px 90px rgba(0,0,0,.32), inset 0 0 50px rgba(201,162,77,.045);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__image {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    min-height: 470px;
+    max-height: 650px;
+    border: 1px solid rgba(201,162,77,.34);
+    object-fit: cover;
+  }
+
+  #AC-Hero-{{ section.id }} .ac-browser {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    width: 100%;
+    min-height: 510px;
+    border: 1px solid rgba(201,162,77,.38);
+    border-radius: 12px;
+    background: #f7f1e8;
+    box-shadow: 0 28px 80px rgba(0,0,0,.32);
+    color: var(--ac-charcoal);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-browser__top { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; height: 50px; padding: 0 17px; border-bottom: 1px solid #ded6cb; background: #fffaf2; }
+  #AC-Hero-{{ section.id }} .ac-browser__dots { display: flex; gap: 6px; }
+  #AC-Hero-{{ section.id }} .ac-browser__dots i { display: block; width: 8px; height: 8px; border-radius: 50%; background: #cbbeb4; }
+  #AC-Hero-{{ section.id }} .ac-browser__dots i:first-child { background: var(--ac-burgundy); }
+  #AC-Hero-{{ section.id }} .ac-browser__dots i:nth-child(2) { background: var(--ac-gold); }
+  #AC-Hero-{{ section.id }} .ac-browser__address { overflow: hidden; padding: 8px 14px; border-radius: 6px; background: #eee7de; color: #7f7072; font-size: 9px; letter-spacing: .08em; text-overflow: ellipsis; white-space: nowrap; }
+  #AC-Hero-{{ section.id }} .ac-browser__screen { display: grid; grid-template-columns: 67px 1fr; min-height: 460px; }
+  #AC-Hero-{{ section.id }} .ac-browser__sidebar { display: flex; align-items: center; flex-direction: column; gap: 19px; padding: 20px 10px; background: var(--ac-burgundy); }
+  #AC-Hero-{{ section.id }} .ac-browser__mini-logo { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--ac-gold); color: var(--ac-gold); font-family: Georgia, serif; font-size: 13px; }
+  #AC-Hero-{{ section.id }} .ac-browser__sidebar i { width: 27px; height: 6px; border-radius: 10px; background: rgba(247,241,232,.2); }
+  #AC-Hero-{{ section.id }} .ac-browser__sidebar i.is-active { background: var(--ac-gold); }
+  #AC-Hero-{{ section.id }} .ac-browser__dashboard { padding: clamp(22px, 4vw, 42px); }
+  #AC-Hero-{{ section.id }} .ac-browser__welcome span { display: block; color: var(--ac-gold); font-size: 9px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+  #AC-Hero-{{ section.id }} .ac-browser__welcome strong { display: block; margin-top: 7px; color: var(--ac-burgundy); font-family: Georgia, serif; font-size: clamp(24px, 3vw, 36px); font-weight: 400; }
+  #AC-Hero-{{ section.id }} .ac-browser__metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 25px; }
+  #AC-Hero-{{ section.id }} .ac-browser__metrics div { min-height: 83px; padding: 14px; border: 1px solid #dfd5c8; border-radius: 7px; background: #fffaf3; }
+  #AC-Hero-{{ section.id }} .ac-browser__metrics span { display: block; color: #837378; font-size: 9px; }
+  #AC-Hero-{{ section.id }} .ac-browser__metrics strong { display: block; margin-top: 9px; color: var(--ac-burgundy); font-size: clamp(17px, 2vw, 25px); }
+  #AC-Hero-{{ section.id }} .ac-browser__lower { display: grid; grid-template-columns: 1.55fr .85fr; gap: 11px; margin-top: 11px; }
+  #AC-Hero-{{ section.id }} .ac-browser__chart,
+  #AC-Hero-{{ section.id }} .ac-browser__tasks { min-height: 190px; padding: 15px; border: 1px solid #dfd5c8; border-radius: 7px; background: #fffaf3; }
+  #AC-Hero-{{ section.id }} .ac-browser__chart-title { display: flex; justify-content: space-between; gap: 10px; color: #6c5d61; font-size: 9px; }
+  #AC-Hero-{{ section.id }} .ac-browser__chart-title b { color: var(--ac-gold); font-weight: 700; }
+  #AC-Hero-{{ section.id }} .ac-browser__chart svg { width: 100%; height: 130px; margin-top: 9px; color: var(--ac-gold); }
+  #AC-Hero-{{ section.id }} .ac-browser__chart-fill { fill: url(#ac-chart-fill-{{ section.id }}); }
+  #AC-Hero-{{ section.id }} .ac-browser__chart-line { fill: none; stroke: currentColor; stroke-width: 4; }
+  #AC-Hero-{{ section.id }} .ac-browser__tasks > span { color: var(--ac-burgundy); font-size: 10px; font-weight: 800; }
+  #AC-Hero-{{ section.id }} .ac-browser__tasks p { display: grid; grid-template-columns: auto 1fr auto; gap: 7px; align-items: center; margin-top: 17px; color: #6c5d61; font-size: 8px; }
+  #AC-Hero-{{ section.id }} .ac-browser__tasks p i { width: 6px; height: 6px; border-radius: 50%; background: var(--ac-gold); box-shadow: 0 0 0 3px rgba(201,162,77,.17); }
+  #AC-Hero-{{ section.id }} .ac-browser__tasks p b { color: #41765c; font-size: 7px; text-transform: uppercase; }
+
+  #AC-Hero-{{ section.id }} .ac-floating-card {
+    position: absolute;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 180px;
+    padding: 13px 15px;
+    border: 1px solid rgba(201,162,77,.58);
+    background: rgba(26,12,15,.91);
+    color: var(--ac-ivory);
+    box-shadow: 0 18px 40px rgba(0,0,0,.3);
+    backdrop-filter: blur(12px);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-floating-card--top { top: 4px; right: 0; animation: ac-float-{{ section.id }} 5.5s ease-in-out infinite; }
+  #AC-Hero-{{ section.id }} .ac-floating-card--bottom { bottom: 0; left: 0; animation: ac-float-{{ section.id }} 6.5s ease-in-out -1.5s infinite; }
+  #AC-Hero-{{ section.id }} .ac-floating-card__icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--ac-gold); color: var(--ac-charcoal); }
+  #AC-Hero-{{ section.id }} .ac-floating-card__icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-width: 1.5; }
+  #AC-Hero-{{ section.id }} .ac-floating-card__pulse { width: 12px; height: 12px; border-radius: 50%; background: #73c798; box-shadow: 0 0 0 5px rgba(115,199,152,.13); }
+  #AC-Hero-{{ section.id }} .ac-floating-card small,
+  #AC-Hero-{{ section.id }} .ac-floating-card strong { display: block; }
+  #AC-Hero-{{ section.id }} .ac-floating-card small { color: var(--ac-gold); font-size: 7px; font-weight: 800; letter-spacing: .13em; }
+  #AC-Hero-{{ section.id }} .ac-floating-card strong { margin-top: 3px; font-family: Georgia, serif; font-size: 14px; font-weight: 400; }
+
+  #AC-Hero-{{ section.id }} .ac-hero__badge {
+    position: absolute;
+    z-index: 5;
+    right: 32px;
+    bottom: -25px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 215px;
+    padding: 15px;
+    border: 1px solid var(--ac-gold);
+    background: var(--ac-ivory);
+    color: var(--ac-charcoal);
+    box-shadow: 0 20px 50px rgba(0,0,0,.27);
+  }
+
+  #AC-Hero-{{ section.id }} .ac-hero__badge-mark { display: grid; place-items: center; width: 42px; height: 42px; background: var(--ac-burgundy); color: var(--ac-gold); font-family: Georgia, serif; font-size: 15px; }
+  #AC-Hero-{{ section.id }} .ac-hero__badge strong,
+  #AC-Hero-{{ section.id }} .ac-hero__badge small { display: block; }
+  #AC-Hero-{{ section.id }} .ac-hero__badge strong { color: var(--ac-burgundy); font-size: 12px; }
+  #AC-Hero-{{ section.id }} .ac-hero__badge small { margin-top: 3px; color: #74666a; font-size: 9px; letter-spacing: .05em; }
+
+  #AC-Hero-{{ section.id }} .ac-hero__bottom-line { position: absolute; right: 0; bottom: 0; left: 0; z-index: 3; height: 4px; background: linear-gradient(90deg, transparent, var(--ac-gold) 30%, var(--ac-gold) 70%, transparent); opacity: .72; }
+
+  #AC-Hero-{{ section.id }}.ac-hero--center .ac-hero__content { text-align: center; }
+  #AC-Hero-{{ section.id }}.ac-hero--center .ac-hero__eyebrow,
+  #AC-Hero-{{ section.id }}.ac-hero--center .ac-hero__buttons,
+  #AC-Hero-{{ section.id }}.ac-hero--center .ac-hero__trust { justify-content: center; }
+
+  #AC-Hero-{{ section.id }} [data-ac-reveal] { opacity: 0; transform: translateY(22px); transition: opacity .75s ease, transform .75s ease; }
+  #AC-Hero-{{ section.id }} [data-ac-reveal].is-visible { opacity: 1; transform: translateY(0); }
+  #AC-Hero-{{ section.id }} .ac-hero__visual[data-ac-reveal] { transition-delay: .12s; }
+
+  @keyframes ac-float-{{ section.id }} {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @media (max-width: 1100px) {
+    #AC-Hero-{{ section.id }} .ac-hero__container { grid-template-columns: minmax(0, 1fr) minmax(390px, .9fr); gap: 36px; width: min(100% - 42px, 1400px); }
+    #AC-Hero-{{ section.id }} .ac-browser__lower { grid-template-columns: 1fr; }
+    #AC-Hero-{{ section.id }} .ac-browser__tasks { display: none; }
+  }
+
+  @media (max-width: 899px) {
+    #AC-Hero-{{ section.id }} .ac-hero__container { grid-template-columns: 1fr; gap: 58px; padding-block: 76px 95px; }
+    #AC-Hero-{{ section.id }} .ac-hero__content { max-width: 780px; }
+    #AC-Hero-{{ section.id }} .ac-hero__visual { max-width: 720px; justify-self: center; }
+    #AC-Hero-{{ section.id }} .ac-hero__grid { mask-image: linear-gradient(#000, transparent 88%); }
+  }
+
+  @media (max-width: 599px) {
+    #AC-Hero-{{ section.id }} .ac-hero__container { width: min(100% - 28px, 1400px); padding-block: 64px 76px; }
+    #AC-Hero-{{ section.id }} .ac-hero__heading { font-size: clamp(45px, 14.5vw, 66px); }
+    #AC-Hero-{{ section.id }} .ac-hero__description { font-size: 16px; line-height: 1.65; }
+    #AC-Hero-{{ section.id }} .ac-hero__buttons { align-items: stretch; flex-direction: column; }
+    #AC-Hero-{{ section.id }} .ac-button { width: 100%; }
+    #AC-Hero-{{ section.id }} .ac-hero__trust { display: grid; grid-template-columns: 1fr; gap: 13px; }
+    #AC-Hero-{{ section.id }} .ac-hero__visual-frame { padding: 20px 8px 24px 16px; }
+    #AC-Hero-{{ section.id }} .ac-hero__visual-frame::before { inset: 0 12px 12px 0; }
+    #AC-Hero-{{ section.id }} .ac-hero__image { min-height: 430px; }
+    #AC-Hero-{{ section.id }} .ac-browser { min-height: 405px; }
+    #AC-Hero-{{ section.id }} .ac-browser__screen { grid-template-columns: 48px 1fr; min-height: 355px; }
+    #AC-Hero-{{ section.id }} .ac-browser__sidebar { gap: 16px; padding-inline: 7px; }
+    #AC-Hero-{{ section.id }} .ac-browser__mini-logo { width: 31px; height: 31px; font-size: 11px; }
+    #AC-Hero-{{ section.id }} .ac-browser__sidebar i { width: 20px; }
+    #AC-Hero-{{ section.id }} .ac-browser__dashboard { padding: 21px 15px; }
+    #AC-Hero-{{ section.id }} .ac-browser__metrics { gap: 6px; }
+    #AC-Hero-{{ section.id }} .ac-browser__metrics div { min-height: 70px; padding: 9px 7px; }
+    #AC-Hero-{{ section.id }} .ac-browser__metrics strong { font-size: 17px; }
+    #AC-Hero-{{ section.id }} .ac-browser__chart { min-height: 160px; padding: 11px; }
+    #AC-Hero-{{ section.id }} .ac-floating-card { min-width: 0; padding: 10px; }
+    #AC-Hero-{{ section.id }} .ac-floating-card--top { right: -4px; }
+    #AC-Hero-{{ section.id }} .ac-floating-card--bottom { left: -3px; }
+    #AC-Hero-{{ section.id }} .ac-floating-card strong { font-size: 12px; }
+    #AC-Hero-{{ section.id }} .ac-hero__badge { right: 18px; bottom: -22px; min-width: 0; padding: 10px 12px; }
+    #AC-Hero-{{ section.id }} .ac-hero__badge-mark { width: 35px; height: 35px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #AC-Hero-{{ section.id }} *,
+    #AC-Hero-{{ section.id }} *::before,
+    #AC-Hero-{{ section.id }} *::after { animation: none !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    #AC-Hero-{{ section.id }} [data-ac-reveal] { opacity: 1; transform: none; }
+  }
+</style>
+
+<script>
+  (() => {
+    const hero = document.getElementById('AC-Hero-{{ section.id }}');
+    if (!hero || hero.dataset.acReady === 'true') return;
+    hero.dataset.acReady = 'true';
+
+    const items = hero.querySelectorAll('[data-ac-reveal]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reducedMotion || !('IntersectionObserver' in window)) {
+      items.forEach((item) => item.classList.add('is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.15 });
+
+    items.forEach((item) => observer.observe(item));
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Arthur's Creatives hero",
+  "tag": "section",
+  "class": "section-ac-hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small heading",
+      "default": "WEBSITES • APPLICATIONS • AI AUTOMATION"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main heading",
+      "default": "Creative technology built to grow your business."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Arthur's Creatives builds professional websites, powerful applications, e-commerce stores, and intelligent automations that help businesses attract customers, save time, and grow with confidence.</p>"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Primary button text",
+      "default": "Start Your Project"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button text",
+      "default": "Explore Our Services"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Optional mobile image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Arthur's Creatives website development and automation services"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_floating_card",
+      "label": "Show floating technology cards",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show founder badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_title",
+      "label": "Badge title",
+      "default": "Built personally"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "By Arthur's Creatives"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "hero_min_height",
+      "min": 600,
+      "max": 950,
+      "step": 25,
+      "unit": "px",
+      "label": "Minimum desktop height",
+      "default": 775
+    },
+    {
+      "type": "color",
+      "id": "burgundy_color",
+      "label": "Burgundy",
+      "default": "#4B0F1B"
+    },
+    {
+      "type": "color",
+      "id": "gold_color",
+      "label": "Antique gold",
+      "default": "#C9A24D"
+    },
+    {
+      "type": "color",
+      "id": "ivory_color",
+      "label": "Warm ivory",
+      "default": "#F7F1E8"
+    },
+    {
+      "type": "color",
+      "id": "charcoal_color",
+      "label": "Dark charcoal",
+      "default": "#180D0F"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust item",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "trust_icon",
+          "label": "Icon",
+          "options": [
+            { "value": "design", "label": "Custom design" },
+            { "value": "mobile", "label": "Mobile" },
+            { "value": "growth", "label": "Growth" },
+            { "value": "shield", "label": "Trust" }
+          ],
+          "default": "design"
+        },
+        {
+          "type": "text",
+          "id": "trust_text",
+          "label": "Text",
+          "default": "Custom-built solutions"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Arthur's Creatives hero",
+      "blocks": [
+        {
+          "type": "trust_item",
+          "settings": {
+            "trust_icon": "design",
+            "trust_text": "Custom-built solutions"
+          }
+        },
+        {
+          "type": "trust_item",
+          "settings": {
+            "trust_icon": "mobile",
+            "trust_text": "Mobile-first design"
+          }
+        },
+        {
+          "type": "trust_item",
+          "settings": {
+            "trust_icon": "growth",
+            "trust_text": "Built for business growth"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

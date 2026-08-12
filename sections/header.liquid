@@ -1,76 +1,473 @@
-<header>
-  <h2 class="header__title">
-    {{ shop.name | link_to: routes.root_url }}
-  </h2>
+{%- liquid
+  assign logo_alt = section.settings.logo.alt | default: shop.name
+  assign header_class = 'ac-header full-width'
 
-  <div class="header__menu">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
+  if section.settings.sticky_header
+    assign header_class = header_class | append: ' ac-header--sticky'
+  endif
+-%}
 
-  <div class="header__icons">
-    {% if shop.customer_accounts_enabled %}
-      <shopify-account menu="{{ section.settings.customer_account_menu }}">
-        {{ 'icon-account.svg' | inline_asset_content }}
-      </shopify-account>
-    {% endif %}
+<div
+  class="{{ header_class }}"
+  style="--ac-logo-width: {{ section.settings.logo_width }}px;"
+>
+  {%- if section.settings.show_announcement and section.settings.announcement_text != blank -%}
+    <div class="ac-announcement">
+      <div class="ac-announcement__inner page-width">
+        {%- if section.settings.announcement_link != blank -%}
+          <a href="{{ section.settings.announcement_link }}">
+            {{ section.settings.announcement_text }}
+          </a>
+        {%- else -%}
+          <span>{{ section.settings.announcement_text }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
 
-    <a href="{{ routes.cart_url }}">
-      {% if cart.item_count > 0 %}
-        <sup>{{ cart.item_count }}</sup>
-      {% endif %}
-
-      {{ 'icon-cart.svg' | inline_asset_content }}
+  <header class="ac-header__bar page-width">
+    <a class="ac-header__brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+      {%- if section.settings.logo != blank -%}
+        {{
+          section.settings.logo
+          | image_url: width: 600
+          | image_tag:
+            class: 'ac-header__logo',
+            widths: '120, 180, 240, 360, 480, 600',
+            sizes: '(max-width: 749px) 150px, var(--ac-logo-width)',
+            alt: logo_alt,
+            loading: 'eager'
+        }}
+      {%- else -%}
+        <span class="ac-header__wordmark">
+          <strong>Arthur's</strong>
+          <small>Creatives</small>
+        </span>
+      {%- endif -%}
     </a>
-  </div>
-</header>
+
+    {%- if section.settings.menu != blank -%}
+      <nav class="ac-header__nav" aria-label="Primary navigation">
+        <ul>
+          {%- for link in section.settings.menu.links -%}
+            <li>
+              <a
+                href="{{ link.url }}"
+                {% if link.current %}
+                  aria-current="page"
+                {% endif %}
+              >
+                {{ link.title | escape }}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="ac-header__actions">
+      {%- if section.settings.cta_label != blank -%}
+        <a
+          class="ac-header__cta"
+          {% if section.settings.cta_link != blank %}
+            href="{{ section.settings.cta_link }}"
+          {% else %}
+            role="link" aria-disabled="true"
+          {% endif %}
+        >
+          {{ section.settings.cta_label | escape }}
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+        <a class="ac-header__icon" href="{{ routes.account_url }}" aria-label="Customer account">
+          {{ 'icon-account.svg' | inline_asset_content }}
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.show_cart -%}
+        <a class="ac-header__icon ac-header__cart" href="{{ routes.cart_url }}" aria-label="Cart with {{ cart.item_count }} items">
+          {{ 'icon-cart.svg' | inline_asset_content }}
+          {%- if cart.item_count > 0 -%}
+            <span aria-hidden="true">{{ cart.item_count }}</span>
+          {%- endif -%}
+        </a>
+      {%- endif -%}
+
+      <details class="ac-header__mobile-menu">
+        <summary aria-label="Open navigation menu">
+          <span></span><span></span><span></span>
+        </summary>
+        <div class="ac-header__mobile-panel">
+          <nav aria-label="Mobile navigation">
+            <ul>
+              {%- if section.settings.menu != blank -%}
+                {%- for link in section.settings.menu.links -%}
+                  <li>
+                    <a
+                      href="{{ link.url }}"
+                      {% if link.current %}
+                        aria-current="page"
+                      {% endif %}
+                    >
+                      {{ link.title | escape }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              {%- endif -%}
+            </ul>
+          </nav>
+
+          {%- if section.settings.cta_label != blank -%}
+            <a
+              class="button"
+              {% if section.settings.cta_link != blank %}
+                href="{{ section.settings.cta_link }}"
+              {% else %}
+                role="link" aria-disabled="true"
+              {% endif %}
+            >
+              {{ section.settings.cta_label | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+      </details>
+    </div>
+  </header>
+</div>
 
 {% stylesheet %}
-  header {
-    height: 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .ac-header {
+    z-index: 30;
+    border-bottom: 1px solid rgba(201, 162, 77, 0.24);
+    background: rgba(255, 253, 252, 0.96);
+    color: var(--color-burgundy);
+    box-shadow: 0 8px 28px rgba(24, 13, 15, 0.05);
   }
-  header a {
-    position: relative;
-    text-decoration: none;
-    color: var(--color-foreground);
+
+  .ac-header--sticky {
+    position: sticky;
+    top: 0;
+  }
+
+  .ac-announcement {
+    background: var(--color-burgundy);
+    color: #fff8ee;
+  }
+
+  .ac-announcement__inner {
     display: flex;
+    min-height: 2.35rem;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
-  header a sup {
-    position: absolute;
-    left: 100%;
-    overflow: hidden;
-    max-width: var(--page-margin);
+
+  .ac-announcement a {
+    color: inherit;
+    text-decoration: none;
   }
-  header svg {
-    width: 2rem;
+
+  .ac-header__bar {
+    display: grid;
+    min-height: 5.25rem;
+    grid-template-columns: minmax(180px, 0.9fr) auto minmax(180px, 0.9fr);
+    align-items: center;
+    gap: 1.5rem;
   }
-  header .header__menu,
-  header .header__icons {
+
+  .ac-header__brand {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ac-header__logo {
+    width: min(var(--ac-logo-width), 100%);
+    max-height: 4rem;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .ac-header__wordmark {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    line-height: 0.9;
+  }
+
+  .ac-header__wordmark strong {
+    font-family: var(--font-heading-family);
+    font-size: clamp(1.45rem, 2vw, 2rem);
+    letter-spacing: -0.035em;
+  }
+
+  .ac-header__wordmark small {
+    margin-top: 0.45rem;
+    color: var(--color-gold);
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+
+  .ac-header__nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.1rem, 2vw, 2rem);
+    list-style: none;
+  }
+
+  .ac-header__nav a {
+    position: relative;
+    padding-block: 1rem;
+    color: var(--color-foreground);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .ac-header__nav a::after {
+    position: absolute;
+    right: 0;
+    bottom: 0.65rem;
+    left: 0;
+    height: 2px;
+    transform: scaleX(0);
+    background: var(--color-gold);
+    content: '';
+    transition: transform 180ms ease;
+  }
+
+  .ac-header__nav a:hover::after,
+  .ac-header__nav a[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .ac-header__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.7rem;
+  }
+
+  .ac-header__cta {
+    display: inline-flex;
+    min-height: 2.8rem;
+    align-items: center;
+    padding: 0.7rem 1.1rem;
+    border-radius: var(--style-border-radius-buttons);
+    background: var(--color-gold);
+    color: var(--color-burgundy);
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .ac-header__cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(75, 15, 27, 0.18);
+  }
+
+  .ac-header__icon {
+    position: relative;
+    display: grid;
+    width: 2.7rem;
+    height: 2.7rem;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-burgundy);
+    text-decoration: none;
+  }
+
+  .ac-header__icon svg {
+    width: 1.25rem;
+  }
+
+  .ac-header__cart > span {
+    position: absolute;
+    top: -0.35rem;
+    right: -0.25rem;
+    display: grid;
+    min-width: 1.25rem;
+    min-height: 1.25rem;
+    place-items: center;
+    padding: 0.12rem;
+    border-radius: 999px;
+    background: var(--color-burgundy);
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+
+  .ac-header__mobile-menu {
+    position: relative;
+    display: none;
+  }
+
+  .ac-header__mobile-menu summary {
+    display: grid;
+    width: 2.8rem;
+    height: 2.8rem;
+    place-content: center;
+    gap: 0.27rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    list-style: none;
+  }
+
+  .ac-header__mobile-menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ac-header__mobile-menu summary span {
+    width: 1.15rem;
+    height: 2px;
+    background: currentcolor;
+  }
+
+  .ac-header__mobile-panel {
+    position: absolute;
+    top: calc(100% + 1rem);
+    right: 0;
+    width: min(19rem, calc(100vw - 2rem));
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--style-border-radius-cards);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .ac-header__mobile-panel ul {
+    display: grid;
+    margin-bottom: 1rem;
+    list-style: none;
+  }
+
+  .ac-header__mobile-panel li + li {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .ac-header__mobile-panel nav a {
+    display: block;
+    padding: 0.8rem 0;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .ac-header__mobile-panel .button {
+    width: 100%;
+  }
+
+  @media (max-width: 989px) {
+    .ac-header__bar {
+      min-height: 4.6rem;
+      grid-template-columns: 1fr auto;
+    }
+
+    .ac-header__nav,
+    .ac-header__cta {
+      display: none;
+    }
+
+    .ac-header__mobile-menu {
+      display: block;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .ac-header__icon {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .ac-header__wordmark strong {
+      font-size: 1.35rem;
+    }
+
+    .ac-header__wordmark small {
+      font-size: 0.58rem;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.header",
+  "name": "Arthur's header",
   "settings": [
     {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "Modern websites, applications and AI automation built for growth"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement link"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Keep header visible while scrolling",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 100,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 190
     },
     {
       "type": "link_list",
-      "id": "customer_account_menu",
-      "label": "t:labels.customer_account_menu",
-      "default": "customer-account-main-menu"
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button text",
+      "default": "Start a Project"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show customer account",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart",
+      "label": "Show cart",
+      "default": true
     }
   ]
 }
